@@ -110,7 +110,7 @@ gulp.task('xar', ['build'], function() {
 	var p = require('./package.json');
 
 	return gulp.src(buildDest + '**/*', {base: buildDest})
-			.pipe(zip("pessoa-" + p.version + ".xar"))
+			.pipe(zip("magicaldraw-" + p.version + ".xar"))
 			.pipe(gulp.dest("."));
 });
 

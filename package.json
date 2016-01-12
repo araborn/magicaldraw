@@ -1,21 +1,21 @@
 {
-  "name": "pessoa",
+  "name": "magicaldraw",
   "version": "1.0.0",
-  "description": "pessoa\r ======",
+  "description": "magicaldraw\r ======",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cceh/pessoa.git"
+    "url": "git+https://github.com/araborn/magicaldraw.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cceh/pessoa/issues"
+    "url": "https://github.com/cceh/magicaldraw/issues"
   },
-  "homepage": "https://github.com/cceh/pessoa#readme",
+  "homepage": "https://github.com/araborn/magicaldraw#readme",
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-exist": "^0.2.1",
