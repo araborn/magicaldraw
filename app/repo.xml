@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <meta xmlns="http://exist-db.org/xquery/repo">
-    <description>Magical Draw</description>
+    <description>MagicalDraw</description>
     <author/>
     <website/>
     <status>alpha</status>
     <license>GNU-LGPL</license>
     <copyright>true</copyright>
-    <type>library</type>
+    <type>application</type>
     <target>magicaldraw</target>
     <prepare>pre-install.xql</prepare>
     <finish/>
-    <permissions user="admin" password="" group="dba" mode="rw-rw-r--"/>
+    <deployed>2016-02-11T16:15:52.577+01:00</deployed>
 </meta>

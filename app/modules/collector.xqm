@@ -1,7 +1,7 @@
 xquery version "3.0";
 
 (:~ Prinzipielle Funktionsdatenbank um die Daten zu extrahieren die benötigt werden :)
-module namespace collector="http://localhost:8080/exist/apps/magicaldraw/modules/collector";
+module namespace collector="http://localhost:8080/apps/magicaldraw/modules/collector";
 import module namespace templates="http://exist-db.org/xquery/templates" at "templates.xql";
 
 (:Sollte über den betreiber der App registriert werden, sinnvoll das in der app zu speichern? Ulrike oder Patrick fragen, je nachdem Marcel :)
@@ -51,8 +51,7 @@ declare function collector:drawDia($node as node(), $model as map(*)(:,$name as 
     let $data-path := "/db/apps/pessoa/resources/magic"
     let $rec := <circle cx ="40" cy ="40" r ="20" />
     
-    let $svg_end := <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+    let $svg_end := 
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" xmlns:xlink="http://www.w3.org/1999/xlink">
    
         {$rec}

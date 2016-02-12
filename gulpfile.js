@@ -83,25 +83,6 @@ gulp.task('deploy-remote', ['remote-upload', 'remote-post-install']);
 
 
 
-// ------ Update Index ----------
-
-var exist_indexupdate_local_pub = {
-		host: "localhost",
-		port: 8080,
-		path: "/exist/xmlrpc",
-		auth: secrets.local,
-		target: "/db/system/config/db/apps/pessoa/data/pub"
-}
-var exist_indexupdate_local_doc = {
-		host: "localhost",
-		port: 8080,
-		path: "/exist/xmlrpc",
-		auth: secrets.local,
-		target: "/db/system/config/db/apps/pessoa/data/doc"
-}
-
-
-
 
 // ------ Make eXist XAR Package ----------
 
