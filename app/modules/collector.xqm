@@ -19,7 +19,7 @@ import module namespace xmldb="http://exist-db.org/xquery/xmldb";
 (:~ General Function, collects the data, given by the User :)
 declare function collector:printResults($data-path as xs:string,$db as xs:string, $name as xs:string+, $term as xs:string+) {  
     let $base := collection(concat($data-path,"/",$db))
-    let $results := <search>
+    let $results := <graphics>
                             {for $par in $term 
                                 let $result := count(collector:range_simple($base,$name,$par))
                                 return <request>
@@ -28,11 +28,12 @@ declare function collector:printResults($data-path as xs:string,$db as xs:string
                                                 <result>{$result}</result>
                                             </request>                                            
                             }
-                            </search>
-
-    return system:as-user($admin:admin-id,$admin:admin-pass,
+                            </graphics>
+    
+    let $data-path := "/db/apps/pessoa/magic"
+    return ( system:as-user($admin:admin-id,$admin:admin-pass,
                                     xmldb:store($data-path,"magic.xml",$results)
-                                    )    
+                                    ) , collector:createSVG())   
 };
 
 
@@ -46,20 +47,43 @@ declare function collector:range_simple($db as node()*,$name as xs:string, $term
 
 
 
-
-declare function collector:drawDia($node as node(), $model as map(*)(:,$name as xs:string, $x as xs:string, $y as xs:string:)) {
-    let $data-path := "/db/apps/pessoa/resources/magic"
-    let $rec := <circle cx ="40" cy ="40" r ="20" />
+declare function collector:createSVG() {
+    let $data-path := "/db/apps/pessoa/magic"
+    let $magic :=    doc(concat($data-path,"/magic.xml"))
     
-    let $svg_end := 
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" xmlns:xlink="http://www.w3.org/1999/xlink">
+    let $amount := count($magic//request)
+    
+    let $graphic :=  for $pos in (1 to $amount)
+                                   let $x := sum(20 * $pos)
+                                   let $rect := <rect
+                                        width="20" 
+                                        height="{$magic//request[$pos]/result/data(.)}"
+                                        style="fill:rgb(0,0,255);stroke-width:2;stroke:rgb(0,0,0)"
+                                     transform="translate({$x},0)  scale(1,-1)"/>
+                                   let $text := <text transform="translate({$x},10) rotate(45)" >{$magic//request[$pos]/term/data(.)}</text>                             
+                                return ($rect,$text)
+                             
+                             
+    
+    let $rec := <circle cx ="40" cy ="40" r ="40" />
+    (:
+    let $svg_head := concat('<?xml version="1.0" encoding="UTF-8"?>','<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">')    :)  
+    let $svg_end :=
+    <svg height="400" width="300" viewBox="-30 -100 300 1" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
    
-        {$rec}
+        {$graphic}
         </svg>
         
-        
+      (:  let $svg_connect := concat(util:eval($svg_head),$svg_end)
+      :)
         return system:as-user($admin:admin-id,$admin:admin-pass,
                                     xmldb:store($data-path,"magic.svg",$svg_end)
                                     )   
+};
 
+
+declare function collector:drawDia($node as node(), $model as map(*), $data-path as xs:string, $name as xs:string) {
+    (: let $data-path := "/db/apps/pessoa/magic"
+     :)
+      doc(concat($data-path,"/",$name,".svg"))
 };

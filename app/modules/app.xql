@@ -24,7 +24,6 @@ declare function app:magicaldraw($node as node(), $model as map(*)) {
     let $data-path := "/db/apps/pessoa/data"
     let $db := "doc"
     let $name := "genre"
-    let $term :=( "lista_editorial", "nota_editorial","plano_editorial" )
-    
+    let $term :=( "lista_editorial", "nota_editorial","plano_editorial" )    
     return collector:printResults($data-path,$db,$name,$term)
 };
