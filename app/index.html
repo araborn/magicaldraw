@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <div xmlns="http://www.w3.org/1999/xhtml" data-template="templates:surround" data-template-with="templates/page.html" data-template-at="content">
     <div class="row">
-        <div class="col-md-8">
+        <!--<div class="col-md-8">
             <div class="page-header">
                 <h1 data-template="config:app-title">Generated page</h1>
             </div>
@@ -20,13 +20,22 @@
                 <div class="col-md-6">
                     <div data-template="app:test"/>
                 </div>
-                <div class="app:magicaldraw"/>
-               <div class="collector:drawDia?data-path=/db/apps/pessoa/magic&amp;name=magic"/>
+                
             </div>
         </div>
         <div class="col-md-4">
             <h2>Application Info</h2>
             <div data-template="config:app-info"/>
+        </div>-->
+       <!-- <div class="app:magicaldraw"/>
+        <div class="draw:drawDia?data-path=/db/apps/pessoa/magic&amp;name=magic"/>
+        -->
+       <!-- <div>Test <i class="draw:testShell"/></div>-->
+        <div>
+            <i class="app:moreMagic"/>
+            <div data-template="draw:drawDia" data-template-data-path="/db/apps/pessoa/magic" data-template-name="Genres"/>
+            <div data-template="draw:drawDia" data-template-data-path="/db/apps/pessoa/magic" data-template-name="Roles"/>
+            <div data-template="draw:drawDia" data-template-data-path="/db/apps/papyri-data/magic" data-template-name="Material"/>
         </div>
     </div>
 </div>
