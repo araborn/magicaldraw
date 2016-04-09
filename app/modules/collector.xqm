@@ -39,12 +39,15 @@ declare function collector:collectData($xml as xs:string) {
 
 declare function collector:createStatisticXML($appPath as xs:string, $db as node()) {
    let $collection := if($db/meta/subFolder/data(.) eq "") then collection($appPath) else collection(concat($appPath,"/",$db/meta/subFolder/data(.)))
-   let $statistic := for $field in $db//fields/field
-                                let $result := count(collector:range_simple($collection,$db//search/term/data(.),$field/name/data(.)))
+   (:let $amount := sum( for $field in $db//fields/field
+                                return count(collector:range_simple($collection,$db//search/term/data(.),$field/name/data(.))))                     
+   let $perPercent := 100 div $amount        <percent>{ xs:decimal($perPercent * $result) }</percent>          :)          
+  let $statistic := for $field in $db//fields/field
+                                let $result := count(collector:range_simple($collection,$db//search/term/data(.),$field/name/data(.)))                                 
                                 return <field>
                                                 <text>{$field/text/data(.)}</text>
                                                 <name>{$field/name/data(.)}</name>
-                                                <result>{$result}</result>
+                                                <result>{$result}</result>                                               
                                             </field>
    let $stats := <statistic id="{$db/@id/data(.)}">
                              {$statistic}

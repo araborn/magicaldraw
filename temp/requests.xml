@@ -1,0 +1,84 @@
+<requests>
+    <header>
+        <appName>pessoa</appName>
+        <appPath>/db/apps/pessoa</appPath>
+        <folders>
+            <data>data</data>
+            <statistics>magic</statistics>
+        </folders>
+    </header>
+    <request id="1">
+        <meta>
+            <chartName>Genres</chartName>
+            <chartType>bar</chartType>
+            <subFolder>doc</subFolder>
+        </meta>
+        <style>
+            <height>400</height>
+            <width>300</width>
+            <visibleWindow>
+                <x1>-30</x1>
+                <y1>-100</y1>
+                <x2>300</x2>
+                <y2>1</y2>
+            </visibleWindow>
+        </style>
+        <search>
+            <type>range</type>
+            <term>genre</term>
+        </search>
+        <fields>
+            <field>
+                <name>lista_editorial</name>
+                <text>Lista Editorial</text>
+            </field>
+            <field>
+                <name>nota_editorial</name>
+                <text>Nota Editorial</text>
+            </field>
+            <field>
+                <name>plano_editorial</name>
+                <text>Plano Editorial</text>
+            </field>
+        </fields>
+    </request>
+    <request id="2">
+        <meta>
+            <chartName>Roles</chartName>
+            <chartType>bar</chartType>
+            <subFolder>doc</subFolder>
+        </meta>
+        <style>
+            <height>400</height>
+            <width>300</width>
+            <visibleWindow>
+                <x1>-30</x1>
+                <y1>-100</y1>
+                <x2>300</x2>
+                <y2>1</y2>
+            </visibleWindow>
+        </style>
+        <search>
+            <type>range</type>
+            <term>role</term>
+        </search>
+        <fields>
+            <field>
+                <name>author</name>
+                <text>Author</text>
+            </field>
+            <field>
+                <name>editor</name>
+                <text>Editor</text>
+            </field>
+            <field>
+                <name>topic</name>
+                <text>Topic</text>
+            </field>
+            <field>
+                <name>translator</name>
+                <text>Translator</text>
+            </field>
+        </fields>
+    </request>
+</requests>

@@ -13,6 +13,9 @@ declare namespace request="http://exist-db.org/xquery/request";
 declare namespace tei="http://www.tei-c.org/ns/1.0";
 import module namespace xmldb="http://exist-db.org/xquery/xmldb";
 
+import module namespace math="http://exist-db.org/xquery/math" at "java:org.exist.xquery.modules.math.MathModule";
+
+
 declare function draw:testShell($node as node(), $model as map(*)) {
     let $data-path := "/db/apps/pessoa/magic"
     let $magic :=    doc(concat($data-path,"/magic.xml"))
@@ -24,16 +27,16 @@ declare function draw:createSVGs($chartType as xs:string, $request as node(),$xm
     switch($chartType) 
         case "bar" return draw:createBarChart($request, $xml)
         default return ()
-};
+        };
 
 declare function draw:createBarChart($request as node()*,$xml as xs:string) {
     let $data := doc($xml)    
     let $statisticPath := concat($data//header/appPath/data(.),"/",$data//header/folders/statistics/data(.))
     let $statisticName := concat("statistic_",$data//appName/data(.),".xml")
     let $statistic := doc(concat($data//header/appPath/data(.),"/",$data//header/folders/statistics/data(.),"/",$statisticName))//statistic[@id = $request/@id/data(.)]
-    let $highest := collector:getHighestResult($statistic)
+    let $highest := xs:integer(collector:getHighestResult($statistic))
     let $amount := count($statistic/field)
-    let $measure := draw:createMeasureLine(0,0,0,0,$highest,10,"Entrys",45) 
+   (: let $measure := draw:createMeasureLine(0,0,0,0,$highest,10,"Entrys",45) :)
     let $graphic :=  for $pos in (1 to $amount)
                                    let $x := sum(20 * $pos)
                                    let $rect := draw:createRectangle($statistic,$pos,20,"fill:rgb(0,0,255);stroke-width:2;stroke:rgb(0,0,0)",$x)                            
@@ -43,7 +46,7 @@ declare function draw:createBarChart($request as node()*,$xml as xs:string) {
     let $svg_end :=
     <svg height="{$style/height/data(.)}" width="{$style/width/data(.)}" viewBox="{$style/visibleWindow/x1/data(.)} {$style/visibleWindow/y1/data(.)} {$style/visibleWindow/x2/data(.)} {$style/visibleWindow/y2/data(.)}" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
    
-        {$graphic,$measure}
+        {$graphic(:,$measure:)} 
         </svg>
      let $svgname := concat($request//meta/chartName/data(.),".svg")
     return system:as-user($admin:admin-id,$admin:admin-pass,
@@ -87,6 +90,37 @@ declare function draw:createMeasureLine($x1,$y1,$x2,$y2, $highest as xs:integer,
         return ($vertical,$horizontal, $xText)
 };
 
+
+declare function draw:createPieChart($request as node()*,$xml as xs:string) {
+    let $data := doc($xml)    
+    let $statisticPath := concat($data//header/appPath/data(.),"/",$data//header/folders/statistics/data(.))
+    let $statisticName := concat("statistic_",$data//appName/data(.),".xml")
+    let $statistic := doc(concat($data//header/appPath/data(.),"/",$data//header/folders/statistics/data(.),"/",$statisticName))//statistic[@id = $request/@id/data(.)]
+    
+    let $amount := count($statistic/field)
+    let $sum := sum(for $field in $statistic/field/data(.) return $field)
+    let $perPercent := 100 div $sum 
+   (: let $measure := draw:createMeasureLine(0,0,0,0,$highest,10,"Entrys",45) :)
+    let $graphic :=  for $pos in (1 to $amount)
+                                   let $x := sum(20 * $pos)
+                                   let $rect := draw:createRectangle($statistic,$pos,20,"fill:rgb(0,0,255);stroke-width:2;stroke:rgb(0,0,0)",$x)                            
+                                   let $text := draw:createText($statistic,$pos,$x,45)
+                                return ($rect,$text)            
+    let $style := $request//style
+    let $svg_end :=
+    <svg height="{$style/height/data(.)}" width="{$style/width/data(.)}" viewBox="{$style/visibleWindow/x1/data(.)} {$style/visibleWindow/y1/data(.)} {$style/visibleWindow/x2/data(.)} {$style/visibleWindow/y2/data(.)}" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
+   
+        {$graphic(:,$measure:)} 
+        </svg>
+     let $svgname := concat($request//meta/chartName/data(.),".svg")
+    return system:as-user($admin:admin-id,$admin:admin-pass,
+                                    xmldb:store($statisticPath,$svgname,$svg_end)
+                                    ) 
+};
+
+declare function draw:createPiePiece() {
+
+};
 
 declare function draw:drawDia($node as node(), $model as map(*), $data-path as xs:string, $name as xs:string) {
     (: let $data-path := "/db/apps/pessoa/magic"
