@@ -117,11 +117,11 @@ declare function draw:createPieChart($request as node()*,$xml as xs:string) {
                                     xmldb:store($statisticPath,$svgname,$svg_end)
                                     ) 
 };
-
+(:
 declare function draw:createPiePiece() {
 
 };
-
+:)
 declare function draw:drawDia($node as node(), $model as map(*), $data-path as xs:string, $name as xs:string) {
     (: let $data-path := "/db/apps/pessoa/magic"
      :)
