@@ -50,7 +50,10 @@ declare function local:geschlechter-chart-erstellen($spruch as node()) as node()
                             <path title="{$spruchlabel}, {$label}: {data($geschlecht)} ({$prozent}%)" 
                             d="M {$local:Mx} {$local:My}
                             L {$local:Mx} {$local:My - $local:rK} 
-                            A {$local:rK} {$local:rK} 0 {$flag} 1 {$Ex} {$Ey} Z" stroke="white" fill="{$conf:colors[$pos]}" stroke-width="1" transform="rotate({$winkelSum}, {$local:Mx}, {$local:My})" />
+                            A {$local:rK} {$local:rK} 0 {$flag} 1 {$Ex} {$Ey} Z" 
+                            stroke="white" fill="{$conf:colors[$pos]}"
+                            stroke-width="1" 
+                            transform="rotate({$winkelSum}, {$local:Mx}, {$local:My})" />
                             </a>
                          </g>
                          

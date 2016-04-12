@@ -26,6 +26,7 @@ declare function draw:testShell($node as node(), $model as map(*)) {
 declare function draw:createSVGs($chartType as xs:string, $request as node(),$xml as xs:string) {
     switch($chartType) 
         case "bar" return draw:createBarChart($request, $xml)
+        case "pie" return draw:createPieChart($request, $xml)
         default return ()
         };
 
@@ -55,7 +56,6 @@ declare function draw:createBarChart($request as node()*,$xml as xs:string) {
    
    
 };
-
 
 (:~ Ist dafür Zuständig ein Rechteck zu Zeichnen :)
 declare function draw:createRectangle($db  as node(),$position as xs:integer, $width as xs:integer, $style as xs:string, $translate as xs:integer) {
@@ -95,20 +95,32 @@ declare function draw:createPieChart($request as node()*,$xml as xs:string) {
     let $data := doc($xml)    
     let $statisticPath := concat($data//header/appPath/data(.),"/",$data//header/folders/statistics/data(.))
     let $statisticName := concat("statistic_",$data//appName/data(.),".xml")
-    let $statistic := doc(concat($data//header/appPath/data(.),"/",$data//header/folders/statistics/data(.),"/",$statisticName))//statistic[@id = $request/@id/data(.)]
+    let $statistic := doc(concat($data//header/appPath/data(.),"/",$data//header/folders/statistics/data(.),"/",$statisticName))//statistic[@id = $request/@id/data(.)]    
+       
+    let $style := $request//style
+    let $svgH := xs:integer($style/height/data(.)) 
+    let $svgW := xs:integer($style/width/data(.)) 
+    let $svgMx := $svgH div 2
+    let $svgMy := $svgW div 2    
+    let $KreisRadius := $svgMx 
+    
+    let $results := for $field in $statistic/field order by xs:integer($field/result/data(.)) ascending return $field
     
     let $amount := count($statistic/field)
-    let $sum := sum(for $field in $statistic/field/data(.) return $field)
+
+        let $sum := sum(for $field in $results/result/data(.) return $field)
+
     let $perPercent := 100 div $sum 
    (: let $measure := draw:createMeasureLine(0,0,0,0,$highest,10,"Entrys",45) :)
-    let $graphic :=  for $pos in (1 to $amount)
-                                   let $x := sum(20 * $pos)
-                                   let $rect := draw:createRectangle($statistic,$pos,20,"fill:rgb(0,0,255);stroke-width:2;stroke:rgb(0,0,0)",$x)                            
-                                   let $text := draw:createText($statistic,$pos,$x,45)
-                                return ($rect,$text)            
-    let $style := $request//style
+  
+    let $graphic := for $pos in (1 to $amount)
+                                let $winkelSum := sum(for $field in (1 to $pos - 1) return  ( round-half-to-even(xs:integer($results[position() = $field]/result/data(.)) *$perPercent,2) * 3.6 ) ) 
+                                
+                                let $percent := round-half-to-even( xs:integer($results[position() = $pos]/result/data(.))*$perPercent,2)
+                                let $name := $results[position() = $pos]/text/data(.)
+                                return draw:createPiePiece($percent,$KreisRadius,$svgMx,$svgMy,$winkelSum,$name)
     let $svg_end :=
-    <svg height="{$style/height/data(.)}" width="{$style/width/data(.)}" viewBox="{$style/visibleWindow/x1/data(.)} {$style/visibleWindow/y1/data(.)} {$style/visibleWindow/x2/data(.)} {$style/visibleWindow/y2/data(.)}" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg height="{$style/height/data(.)}" width="{$style/width/data(.)}" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
    
         {$graphic(:,$measure:)} 
         </svg>
@@ -117,11 +129,32 @@ declare function draw:createPieChart($request as node()*,$xml as xs:string) {
                                     xmldb:store($statisticPath,$svgname,$svg_end)
                                     ) 
 };
-(:
-declare function draw:createPiePiece() {
 
+declare function draw:createPiePiece($percent as xs:integer, $KreisRadius as xs:integer, $Mx  as xs:integer, $My  as xs:integer, $winkelSum as xs:integer,$name as xs:string) {
+    let $winkel := if($percent = 100) then 359 else $percent * 3.6
+    let $radian := math:radians($winkel)
+    let $Ex := math:sin($radian) * $KreisRadius + $KreisRadius 
+    let $Ey := $KreisRadius - math:cos($radian) * $KreisRadius 
+    let $Ex := $Ex +$Mx - $KreisRadius
+    let $Ey := $Ey +$My - $KreisRadius
+     let $flag := if ($winkel gt 180) then 1 else 0
+    return <g xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <path title="{$name}"
+                    d="M {$Mx} {$My}
+                    L {$Mx} {$My - $KreisRadius}
+                    A {$KreisRadius} {$KreisRadius} 0 {$flag} 1 {$Ex} {$Ey} Z"
+                    stroke="white" fill="blue"
+                    stroke-width="1"
+                    transform="rotate({$winkelSum}, {$Mx}, {$My})"/>                    
+                </g>   
 };
-:)
+
+declare function draw:calculateRadiant($result as xs:integer, $perPercent as xs:integer) as xs:integer{
+    let $multi :=$result * $perPercent
+   let $result :=  round-half-to-even($multi ,2)
+   return $result
+};
+
 declare function draw:drawDia($node as node(), $model as map(*), $data-path as xs:string, $name as xs:string) {
     (: let $data-path := "/db/apps/pessoa/magic"
      :)
