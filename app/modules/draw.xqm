@@ -135,14 +135,12 @@ declare function draw:createPiePiece($percent as xs:integer, $KreisRadius as xs:
     let $radian := math:radians($winkel)
     let $Ex := math:sin($radian) * $KreisRadius + $KreisRadius 
     let $Ey := $KreisRadius - math:cos($radian) * $KreisRadius 
-    let $Ex := $Ex +$Mx - $KreisRadius
-    let $Ey := $Ey +$My - $KreisRadius
+    let $Ex := $Ex + $Mx - $KreisRadius
+    let $Ey := $Ey + $My - $KreisRadius
      let $flag := if ($winkel gt 180) then 1 else 0
     return <g xmlns:xlink="http://www.w3.org/1999/xlink">
                     <path title="{$name}"
-                    d="M {$Mx} {$My}
-                    L {$Mx} {$My - $KreisRadius}
-                    A {$KreisRadius} {$KreisRadius} 0 {$flag} 1 {$Ex} {$Ey} Z"
+                    d="M {$Mx} {$My} L {$Mx} {$My - $KreisRadius} A {$KreisRadius} {$KreisRadius} 0 {$flag} 1 {$Ex} {$Ey} Z"
                     stroke="white" fill="blue"
                     stroke-width="1"
                     transform="rotate({$winkelSum}, {$Mx}, {$My})"/>                    
