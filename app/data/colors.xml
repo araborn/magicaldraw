@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<colors>
+    <section name="red">
+        <color>#FF470B</color>
+        <color>#E82A00</color>
+        <color>#FF1E00</color>
+        <color>#E81004</color>
+        <color>#FF0813</color>
+        <color>#E8170C</color>
+        <color>#FF2C10</color>     
+        <color>#FF692A</color>
+        <color>#E85226</color>
+        <color>#FF4E2D</color>
+        <color>#E83E2E</color>
+        <color>#FF3A36</color>
+    </section>
+    <section name="orange">
+        <color>#FFA614</color>
+        <color>#E88C12</color>
+        <color>#FF8B17</color>
+        <color>#E87319</color>
+        <color>#FF7120</color>
+        <color>#E85C21</color>
+        <color>#FF5928</color>        
+    </section>
+    <section name="blue">
+        <color>#1B15FF</color>
+        <color>#1227E8</color>
+        <color>#184BFF</color>
+        <color>#1A61E8</color>
+        <color>#2089FF</color>
+        <color>#2198E8</color> 
+        <color>#28C3FF</color>
+        <color>#29CAE8</color>
+        <color>#30F8FF</color>
+        <color>#30E8D6</color>
+        <color>#38FFD1</color>        
+    </section>
+    <section name="green">
+        <color>#0DFF64</color>
+        <color>#0BE83E</color>
+        <color>#10FF27</color>
+        <color>#1DE813</color>
+        <color>#49FF19</color>
+        <color>#67E81B</color>
+        <color>#98FF21</color>
+        <color>#ADE822</color>
+        <color>#E2FF29</color>        
+    </section>
+</colors>

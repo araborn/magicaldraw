@@ -24,30 +24,33 @@ declare function draw:testShell($node as node(), $model as map(*)) {
 
 
 declare function draw:createSVGs($chartType as xs:string, $request as node(),$xml as xs:string) {
-    switch($chartType) 
+   switch($chartType) 
         case "bar" return draw:createBarChart($request, $xml)
         case "pie" return draw:createPieChart($request, $xml)
         default return ()
         };
 
 declare function draw:createBarChart($request as node()*,$xml as xs:string) {
+    
     let $data := doc($xml)    
     let $statisticPath := concat($data//header/appPath/data(.),"/",$data//header/folders/statistics/data(.))
     let $statisticName := concat("statistic_",$data//appName/data(.),".xml")
     let $statistic := doc(concat($data//header/appPath/data(.),"/",$data//header/folders/statistics/data(.),"/",$statisticName))//statistic[@id = $request/@id/data(.)]
+    let $style := $request//style
+    let $colors := doc("/db/apps/magicaldraw/data/colors.xml")//section[@name = $style/color/data(.)]
     let $highest := xs:integer(collector:getHighestResult($statistic))
     let $amount := count($statistic/field)
-   (: let $measure := draw:createMeasureLine(0,0,0,0,$highest,10,"Entrys",45) :)
+    let $measure := draw:createMeasureLine(0,0,0,0,$highest,10,"Entrys",45) 
     let $graphic :=  for $pos in (1 to $amount)
                                    let $x := sum(20 * $pos)
-                                   let $rect := draw:createRectangle($statistic,$pos,20,"fill:rgb(0,0,255);stroke-width:2;stroke:rgb(0,0,0)",$x)                            
+                                   let $color := $colors/color[position() = $pos]/data(.)
+                                   let $rect := draw:createRectangle($statistic,$pos,20,concat("fill:",$color,";stroke-width:2;stroke:rgb(0,0,0)"),$x)                            
                                    let $text := draw:createText($statistic,$pos,$x,45)
                                 return ($rect,$text)            
-    let $style := $request//style
     let $svg_end :=
     <svg height="{$style/height/data(.)}" width="{$style/width/data(.)}" viewBox="{$style/visibleWindow/x1/data(.)} {$style/visibleWindow/y1/data(.)} {$style/visibleWindow/x2/data(.)} {$style/visibleWindow/y2/data(.)}" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
    
-        {$graphic(:,$measure:)} 
+        {$graphic,$measure} 
         </svg>
      let $svgname := concat($request//meta/chartName/data(.),".svg")
     return system:as-user($admin:admin-id,$admin:admin-pass,
@@ -101,8 +104,10 @@ declare function draw:createPieChart($request as node()*,$xml as xs:string) {
     let $svgH := xs:integer($style/height/data(.)) 
     let $svgW := xs:integer($style/width/data(.)) 
     let $svgMx := $svgH div 2
-    let $svgMy := $svgW div 2    
-    let $KreisRadius := $svgMx 
+    let $svgMy := $svgMx   
+    let $KreisRadius := $svgMx -10
+    let $colors :=  doc("/db/apps/magicaldraw/data/colors.xml")//section[@name = $style/color/data(.)]
+    
     
     let $results := for $field in $statistic/field order by xs:integer($field/result/data(.)) ascending return $field
     
@@ -111,16 +116,15 @@ declare function draw:createPieChart($request as node()*,$xml as xs:string) {
         let $sum := sum(for $field in $results/result/data(.) return $field)
 
     let $perPercent := 100 div $sum 
-   (: let $measure := draw:createMeasureLine(0,0,0,0,$highest,10,"Entrys",45) :)
-  
+   (: let $measure := draw:createMeasureLine(0,0,0,0,$highest,10,"Entrys",45) :)  
     let $graphic := for $pos in (1 to $amount)
-                                let $winkelSum := sum(for $field in (1 to $pos - 1) return  ( round-half-to-even(xs:integer($results[position() = $field]/result/data(.)) *$perPercent,2) * 3.6 ) ) 
-                                
-                                let $percent := round-half-to-even( xs:integer($results[position() = $pos]/result/data(.))*$perPercent,2)
+                                let $winkelSum := sum(for $field in (1 to ($pos - 1)) return  ( ceiling(xs:integer($results[position() = $field]/result/data(.)) *$perPercent) * 3.6 ) ) 
+                                let $color := $colors/color[position() = $pos]/data(.)
+                                let $percent := ceiling( xs:integer($results[position() = $pos]/result/data(.))*$perPercent)
                                 let $name := $results[position() = $pos]/text/data(.)
-                                return draw:createPiePiece($percent,$KreisRadius,$svgMx,$svgMy,$winkelSum,$name)
+                                return draw:createPiePiece($percent,$KreisRadius,$svgMx,$svgMy,$winkelSum,$name,$color, $pos)
     let $svg_end :=
-    <svg height="{$style/height/data(.)}" width="{$style/width/data(.)}" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg height="{$svgH}" width="{$svgW}" xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink">
    
         {$graphic(:,$measure:)} 
         </svg>
@@ -130,18 +134,25 @@ declare function draw:createPieChart($request as node()*,$xml as xs:string) {
                                     ) 
 };
 
-declare function draw:createPiePiece($percent as xs:integer, $KreisRadius as xs:integer, $Mx  as xs:integer, $My  as xs:integer, $winkelSum as xs:integer,$name as xs:string) {
+declare function draw:createPiePiece($percent as xs:integer, $KreisRadius as xs:integer, $Mx  as xs:integer, $My  as xs:integer, $winkelSum as xs:integer,$name as xs:string, $color as xs:string, $pos as xs:integer) {
     let $winkel := if($percent = 100) then 359 else $percent * 3.6
     let $radian := math:radians($winkel)
     let $Ex := math:sin($radian) * $KreisRadius + $KreisRadius 
     let $Ey := $KreisRadius - math:cos($radian) * $KreisRadius 
     let $Ex := $Ex + $Mx - $KreisRadius
     let $Ey := $Ey + $My - $KreisRadius
+    
+    let $Ty := $pos * 20
+    let $Tx := $Mx * 2 + 20
+    
      let $flag := if ($winkel gt 180) then 1 else 0
     return <g xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <path title="{$name}"
+                    <rect x="{$Tx}" y="{$Ty}" width="11" height="11" stroke="none" stroke-width="0" fill="{$color}"/>
+                    <text text-anchor="start" x="{$Tx + 15}" y="{$Ty + 10}" font-family="Arial" font-size="11" stroke="none" stroke-width="0" fill="#666666">{$name}</text>
+                    <text text-anchor="start" x="{$Tx + 120}" y="{$Ty + 10}" font-family="Arial" font-size="11" stroke="none" stroke-width="0" fill="#666666">({$percent}%)</text>
+                    <path title="{$name} ({$percent}% ) "
                     d="M {$Mx} {$My} L {$Mx} {$My - $KreisRadius} A {$KreisRadius} {$KreisRadius} 0 {$flag} 1 {$Ex} {$Ey} Z"
-                    stroke="white" fill="blue"
+                    stroke="white" fill="{$color}"
                     stroke-width="1"
                     transform="rotate({$winkelSum}, {$Mx}, {$My})"/>                    
                 </g>   
