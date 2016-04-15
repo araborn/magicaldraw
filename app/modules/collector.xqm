@@ -47,7 +47,8 @@ declare function collector:createStatisticXML($appPath as xs:string, $db as node
                                 return <field>
                                                 <text>{$field/text/data(.)}</text>
                                                 <name>{$field/name/data(.)}</name>
-                                                <result>{$result}</result>                                               
+                                                <result>{$result}</result>          
+                                                {if(exists($field/color)) then <color>{$field/color/data(.)}</color> else ()}
                                             </field>
    let $stats := <statistic id="{$db/@id/data(.)}">
                              {$statistic}

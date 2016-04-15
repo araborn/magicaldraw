@@ -10,18 +10,19 @@
     <request id="1">
         <meta>
             <chartName>Genres</chartName>
-            <chartType>bar</chartType>
+            <chartType>pie</chartType>
             <subFolder>doc</subFolder>
         </meta>
         <style>
-            <height>400</height>
-            <width>300</width>
+            <height>300</height>
+            <width>600</width>
             <visibleWindow>
                 <x1>-30</x1>
-                <y1>-100</y1>
+                <y1>30</y1>
                 <x2>300</x2>
                 <y2>1</y2>
             </visibleWindow>
+            <color>custom</color>
         </style>
         <search>
             <type>range</type>
@@ -31,14 +32,17 @@
             <field>
                 <name>lista_editorial</name>
                 <text>Lista Editorial</text>
+                <color>#1DE813</color>
             </field>
             <field>
                 <name>nota_editorial</name>
                 <text>Nota Editorial</text>
+                <color>#1B15FF</color>
             </field>
             <field>
                 <name>plano_editorial</name>
                 <text>Plano Editorial</text>
+                <color>#E83E2E</color>
             </field>
         </fields>
     </request>
@@ -55,8 +59,9 @@
                 <x1>-30</x1>
                 <y1>-100</y1>
                 <x2>300</x2>
-                <y2>1</y2>
+                <y2>40</y2>
             </visibleWindow>
+            <color>custom</color>
         </style>
         <search>
             <type>range</type>
@@ -66,18 +71,22 @@
             <field>
                 <name>author</name>
                 <text>Author</text>
+                <color>#184BFF</color>
             </field>
             <field>
                 <name>editor</name>
                 <text>Editor</text>
+                <color>#FF7120</color>
             </field>
             <field>
                 <name>topic</name>
                 <text>Topic</text>
+                <color>#FF692A</color>
             </field>
             <field>
                 <name>translator</name>
                 <text>Translator</text>
+                <color>#FF0813</color>
             </field>
         </fields>
     </request>

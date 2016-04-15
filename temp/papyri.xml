@@ -10,18 +10,19 @@
     <request id="1">
         <meta>
             <chartName>Material</chartName>
-            <chartType>bar</chartType>
-            <subFolder/>
+            <chartType>pie</chartType>
+            <subFolder/>            
         </meta>
         <style>
-            <height>400</height>
-            <width>300</width>
+            <height>300</height>
+            <width>600</width>
             <visibleWindow>
                 <x1>-30</x1>
-                <y1>-100</y1>
+                <y1>30</y1>
                 <x2>300</x2>
                 <y2>1</y2>
             </visibleWindow>
+            <color>red</color>
         </style>
         <search>
             <type>range</type>
@@ -52,10 +53,12 @@
                 <name>papier</name>
                 <text>papier</text>
             </field>
+            <!--
             <field>
                 <name>pergament</name>
                 <text>pergament</text>
             </field>
+            -->
             <field>
                 <name>silber</name>
                 <text>silber</text>
@@ -68,10 +71,11 @@
                 <name>stein</name>
                 <text>stein</text>
             </field>
+            <!--
             <field>
                 <name>ton</name>
                 <text>ton</text>
-            </field>
+            </field>-->
             <field>
                 <name>wachsbeschichtung</name>
                 <text>wachsbeschichtung</text>
