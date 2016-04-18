@@ -13,8 +13,8 @@ import module namespace templates="http://exist-db.org/xquery/templates" ;
  :)
 import module namespace config="http://localhost/apps/magicaldraw/config" at "config.xqm";
 import module namespace app="http://localhost:8080/apps/magicaldraw/modules/app" at "app.xql";
-import module namespace collector="http://localhost:8080/apps/magicaldraw/modules/collector" at "collector.xqm";
-import module namespace draw="http://localhost:8080/apps/magicaldraw/modules/draw" at "draw.xqm";
+import module namespace collector="http://localhost:8080/exist/apps/magicaldraw/collector" at "collector.xqm";
+import module namespace draw="http://localhost:8080/exist/apps/magicaldraw/draw" at "draw.xqm";
 
 
 declare namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";

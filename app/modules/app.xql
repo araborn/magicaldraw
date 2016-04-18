@@ -4,7 +4,7 @@ module namespace app="http://localhost:8080/apps/magicaldraw/modules/app";
 
 import module namespace templates="http://exist-db.org/xquery/templates" ;
 import module namespace config="http://localhost/apps/magicaldraw/config" at "config.xqm";
-import module namespace collector="http://localhost:8080/apps/magicaldraw/modules/collector" at "collector.xqm";
+import module namespace collector="http://localhost:8080/exist/apps/magicaldraw/collector" at "collector.xqm";
 
 (:~
  : This is a sample templating function. It will be called by the templating module if
@@ -30,6 +30,10 @@ declare function app:magicaldraw($node as node(), $model as map(*)) {
 };
 :)
 
+
+(:~
+: Initialisierende Funktion, sammelt die Daten und gibt sie an collector:collectData weiter
+:)
 declare function app:moreMagic($node as node(), $model as map(*)) {
     collector:collectData("/db/apps/pessoa/magic/requests.xml"), 
     collector:collectData("/db/apps/papyri-data/magic/papyri.xml") 
