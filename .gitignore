@@ -9,3 +9,5 @@ exist-secrets.json
 build
 *.xar
 admin.xqm
+.idea
+temp

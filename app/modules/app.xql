@@ -35,6 +35,5 @@ declare function app:magicaldraw($node as node(), $model as map(*)) {
 : Initialisierende Funktion, sammelt die Daten und gibt sie an collector:collectData weiter
 :)
 declare function app:moreMagic($node as node(), $model as map(*)) {
-    collector:collectData("/db/apps/pessoa/magic/requests.xml"), 
-    collector:collectData("/db/apps/papyri-data/magic/papyri.xml") 
-};
+    collector:collectData("/db/apps/pessoa/magic/requests.xml")
+    };

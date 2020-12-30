@@ -13,27 +13,21 @@ var sourceDir = 'app/'
 var buildDest = 'build/';
 
 
-var exist_local_conf = {
+var localExist = exist.createClient({
 		host: "localhost",
 		port: 8080,
 		path: "/exist/xmlrpc",
-		auth: secrets.local,
-		target: "/db/apps/magicaldraw",
-		permissions: {
-			"controller.xql": "rwxr-xr-x"
-		}
-	};
+		basic_auth: secrets.local
+	});
 
-var exist_remote_conf = {
-		host: " ",
+var remoteExist = exist.createClient({
+		host: "projects.uni-koeln.de",
 		port: 8080,
 		path: "/xmlrpc",
-		auth: secrets.remote,
-		target: "/db/apps/pessoa",
-		permissions: {
-			"controller.xql": "rwxr-xr-x"
-		}
-}
+		basic_auth: secrets.remote
+});
+
+var permissions = { 'controller.xql': 'rwxr-xr-x' };
 
 
 // ------ Copy (and compile) sources and assets to build dir ----------
@@ -56,12 +50,13 @@ gulp.task('build', ['copy']);
 
 
 gulp.task('local-upload', ['build'], function() {
-
 	return gulp.src(buildDest + '**/*', {base: buildDest})
-		.pipe(exist.newer(exist_local_conf))
-		.pipe(exist.dest(exist_local_conf));
+		.pipe(localExist.newer({target: "/db/apps/magicaldraw/"}))
+		.pipe(localExist.dest({
+			target: "/db/apps/magicaldraw",
+			permissions: permissions
+		}));
 });
-
 gulp.task('deploy-local',['local-upload']);
 
 
